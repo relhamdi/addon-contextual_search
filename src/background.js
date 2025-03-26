@@ -6,7 +6,7 @@ const SEARCH_IMAGE_PREFIX = 'imageSearch_';
 
 let searchEngines;
 let imageSearchEngines;
-let lastClickInfo = null;
+
 
 // Read config file
 const loadConfigData = async () => {
@@ -92,6 +92,7 @@ const buildContextMenuItems = async () => {
 const handleContextMenuClick = async (info, tab) => {
     let query = '';
 
+    // Load data if necessary
     if (!searchEngines || !imageSearchEngines) {
         await loadConfigData();
     }
@@ -126,24 +127,9 @@ const main = async () => {
 };
 
 
-// onClicked => Handle first click after waking up
+// onClicked => Handle click on contextual menu
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-    if (lastClickInfo) {
-        await handleContextMenuClick(lastClickInfo.info, lastClickInfo.tab);
-        lastClickInfo = null;
-    } else {
-        await handleContextMenuClick(info, tab);
-    }
-});
-
-// onStartup => Run action
-chrome.runtime.onStartup.addListener(() => {
-    if (lastClickInfo) {
-        setTimeout(async () => {
-            await handleContextMenuClick(lastClickInfo.info, lastClickInfo.tab);
-            lastClickInfo = null;
-        }, 300);
-    }
+    await handleContextMenuClick(info, tab);
 });
 
 
