@@ -10,13 +10,15 @@ If an image is selected, image-based search engines will be displayed.
 
 ## Config
 
-You can register custom search engines in the `src/config.base.js` file, that needs to be renamed in `src/config.js`.
+You can register custom search engines in the `config/config.base.json` file, that needs to be renamed in `config/config.json`.
 
 Rules on search engines definition:
 - Object must have the `name` and `url` properties
 - `url` must contains the `%s` symbol, where the query will be replaced
 
-> Note: It is possible to add separators between search engines, to organize them. Just add an Object with a name equals to the **SEPARATOR_NAME** variable, further example in `src/config.base.js` (the `url` property is not used).
+> Note 1: It is possible to add separators between search engines, to organize them. Just add an Object with an empty `name`, further examples in `config/config.base.json` (the `url` property is not used here).
+
+> Note 2: It is possible to register an engine in the config file, but without displaying it through the extension. For that, add a `hidden` property that equals `true` for the targeted engine, further examples in `config/config.base.json`.
 
 
 ## Installation
