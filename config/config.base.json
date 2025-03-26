@@ -6,7 +6,8 @@
         },
         {
             "name": "Bing",
-            "url": "https://www.bing.com/search?q=%s"
+            "url": "https://www.bing.com/search?q=%s",
+            "hidden": true
         },
         {
             "name": ""
