@@ -22,9 +22,10 @@ Rules on search engines definition:
 ## Installation
 
 1. Clone this repo / Download as zip (then unzip) at the desired location
-2. Type in `chrome://extensions/` in your Chromium browser
-3. Enable developer mode (if needed)
-4. Select *loading an unpacked extension* and select the repo's directory
+2. Register your search engines (as said in the previous part)
+3. Type in `chrome://extensions/` in your Chromium browser
+4. Enable developer mode (if needed)
+5. Select *loading an unpacked extension* and select the repo's directory
 
 
 ## Usage
