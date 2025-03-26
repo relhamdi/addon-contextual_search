@@ -1,3 +1,9 @@
+const SEARCH_TEXT_ID = 'searchText';
+const SEARCH_IMAGE_ID = 'searchImage';
+
+const SEARCH_TEXT_PREFIX = 'textSearch_';
+const SEARCH_IMAGE_PREFIX = 'imageSearch_';
+
 let searchEngines;
 let imageSearchEngines;
 
@@ -11,11 +17,11 @@ const loadConfigData = async () => {
         searchEngines = data?.searchEngines || [];
         imageSearchEngines = data?.imageSearchEngines || [];
 
-        console.log('Config file loaded.');
+        console.log('✅ Config file loaded.');
         console.log(`> ${searchEngines.length} text search engines loaded.`)
         console.log(`> ${imageSearchEngines.length} image search engines loaded.`)
     } catch (error) {
-        console.error('Error while loading the config file:', error);
+        console.error('❌ Error while loading the config file:', error);
     }
 };
 
@@ -26,7 +32,7 @@ const buildContextMenuItems = async () => {
 
     // Text search menu
     chrome.contextMenus.create({
-        id: 'searchText',
+        id: SEARCH_TEXT_ID,
         title: '🔍 Search for: \'%s\'',
         contexts: ['selection'],
     });
@@ -37,15 +43,15 @@ const buildContextMenuItems = async () => {
 
         if (engine.name) {
             chrome.contextMenus.create({
-                id: 'search_' + engine.name,
-                parentId: 'searchText',
+                id: SEARCH_TEXT_PREFIX + engine.name,
+                parentId: SEARCH_TEXT_ID,
                 title: 'On ' + engine.name,
                 contexts: ['selection'],
             });
         } else {
             chrome.contextMenus.create({
                 id: 'separator_' + index,
-                parentId: 'searchText',
+                parentId: SEARCH_TEXT_ID,
                 type: 'separator',
                 contexts: ['selection'],
             });
@@ -54,7 +60,7 @@ const buildContextMenuItems = async () => {
 
     // Image search menu
     chrome.contextMenus.create({
-        id: 'searchImage',
+        id: SEARCH_IMAGE_ID,
         title: '🖼️ Search this image',
         contexts: ['image'],
     });
@@ -65,15 +71,15 @@ const buildContextMenuItems = async () => {
 
         if (engine.name) {
             chrome.contextMenus.create({
-                id: 'imageSearch_' + engine.name,
-                parentId: 'searchImage',
+                id: SEARCH_IMAGE_PREFIX + engine.name,
+                parentId: SEARCH_IMAGE_ID,
                 title: 'On ' + engine.name,
                 contexts: ['image'],
             });
         } else {
             chrome.contextMenus.create({
                 id: 'separator_' + index,
-                parentId: 'searchImage',
+                parentId: SEARCH_IMAGE_ID,
                 type: 'separator',
                 contexts: ['image'],
             });
@@ -92,27 +98,27 @@ const main = async () => {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     let query = '';
 
-    if (info.menuItemId.startsWith('search_')) {
+    if (info.menuItemId.startsWith(SEARCH_TEXT_PREFIX)) {
         // Text search
         query = encodeURIComponent(info.selectionText);
-        const engine = searchEngines.find(e => 'search_' + e.name === info.menuItemId);
+        const engine = searchEngines.find(e => SEARCH_TEXT_PREFIX + e.name === info.menuItemId);
         if (engine) {
             const searchUrl = engine.url.replace('%s', query);
-            console.log(`'${engine.name}' search with: ${searchUrl}`);
+            console.log(`> '${engine.name}' search with: ${searchUrl}`);
             chrome.tabs.create({ url: searchUrl });
         }
 
-    } else if (info.menuItemId.startsWith('imageSearch_')) {
+    } else if (info.menuItemId.startsWith(SEARCH_IMAGE_PREFIX)) {
         // Image search
         query = encodeURIComponent(info.srcUrl);
-        const engine = imageSearchEngines.find(e => 'imageSearch_' + e.name === info.menuItemId);
+        const engine = imageSearchEngines.find(e => SEARCH_IMAGE_PREFIX + e.name === info.menuItemId);
         if (engine) {
             const searchUrl = engine.url.replace('%s', query);
-            console.log(`'${engine.name}' search with: ${searchUrl}`);
+            console.log(`> '${engine.name}' search with: ${searchUrl}`);
             chrome.tabs.create({ url: searchUrl });
         }
     }
 });
 
-console.log('Extension loaded');
+console.log('🚀 Extension loaded');
 main();
