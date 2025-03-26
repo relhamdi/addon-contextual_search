@@ -33,6 +33,8 @@ const buildContextMenuItems = async () => {
 
     // Text search engines buttons and separators
     searchEngines.forEach((engine, index) => {
+        if (engine.hidden) return;
+
         if (engine.name) {
             chrome.contextMenus.create({
                 id: 'search_' + engine.name,
@@ -59,6 +61,8 @@ const buildContextMenuItems = async () => {
 
     // Image search engines buttons and separators
     imageSearchEngines.forEach((engine, index) => {
+        if (engine.hidden) return;
+
         if (engine.name) {
             chrome.contextMenus.create({
                 id: 'imageSearch_' + engine.name,
