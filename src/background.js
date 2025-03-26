@@ -26,6 +26,32 @@ const loadConfigData = async () => {
     }
 };
 
+// Create context menu items based on parameters
+const createMenuItems = (menuId, engines, prefix, context) => {
+    engines.forEach((engine, index) => {
+        // Skip if engine is not wanted
+        if (engine.hidden) return;
+
+        if (engine.name) {
+            // If engine has a name, display it
+            chrome.contextMenus.create({
+                id: prefix + engine.name,
+                parentId: menuId,
+                title: 'On ' + engine.name,
+                contexts: [context],
+            });
+        } else {
+            // Else, add a separator
+            chrome.contextMenus.create({
+                id: 'separator_' + index,
+                parentId: menuId,
+                type: 'separator',
+                contexts: [context],
+            });
+        }
+    });
+};
+
 // Build context menu items
 const buildContextMenuItems = async () => {
     // Delete elements to avoid duplicates when app is reloaded
@@ -38,26 +64,8 @@ const buildContextMenuItems = async () => {
         contexts: ['selection'],
     });
 
-    // Text search engines buttons and separators
-    searchEngines.forEach((engine, index) => {
-        if (engine.hidden) return;
-
-        if (engine.name) {
-            chrome.contextMenus.create({
-                id: SEARCH_TEXT_PREFIX + engine.name,
-                parentId: SEARCH_TEXT_ID,
-                title: 'On ' + engine.name,
-                contexts: ['selection'],
-            });
-        } else {
-            chrome.contextMenus.create({
-                id: 'separator_' + index,
-                parentId: SEARCH_TEXT_ID,
-                type: 'separator',
-                contexts: ['selection'],
-            });
-        }
-    });
+    // Create the text search engines items
+    createMenuItems(SEARCH_TEXT_ID, searchEngines, SEARCH_TEXT_PREFIX, 'selection');
 
     // Image search menu
     chrome.contextMenus.create({
@@ -66,31 +74,14 @@ const buildContextMenuItems = async () => {
         contexts: ['image'],
     });
 
-    // Image search engines buttons and separators
-    imageSearchEngines.forEach((engine, index) => {
-        if (engine.hidden) return;
-
-        if (engine.name) {
-            chrome.contextMenus.create({
-                id: SEARCH_IMAGE_PREFIX + engine.name,
-                parentId: SEARCH_IMAGE_ID,
-                title: 'On ' + engine.name,
-                contexts: ['image'],
-            });
-        } else {
-            chrome.contextMenus.create({
-                id: 'separator_' + index,
-                parentId: SEARCH_IMAGE_ID,
-                type: 'separator',
-                contexts: ['image'],
-            });
-        }
-    });
+    // Create the image search engines items
+    createMenuItems(SEARCH_IMAGE_ID, imageSearchEngines, SEARCH_IMAGE_PREFIX, 'image');
 };
 
 // Contextual menu management
 const handleContextMenuClick = async (info, tab) => {
     let query = '';
+    let engine;
 
     // Load data if necessary
     if (!searchEngines || !imageSearchEngines) {
@@ -100,22 +91,19 @@ const handleContextMenuClick = async (info, tab) => {
     if (info.menuItemId.startsWith(SEARCH_TEXT_PREFIX)) {
         // Text search
         query = encodeURIComponent(info.selectionText);
-        const engine = searchEngines.find(e => SEARCH_TEXT_PREFIX + e.name === info.menuItemId);
-        if (engine) {
-            const searchUrl = engine.url.replace('%s', query);
-            console.log(`> '${engine.name}' search with: ${searchUrl}`);
-            chrome.tabs.create({ url: searchUrl, index: tab.index + 1 });
-        }
+        engine = searchEngines.find(e => SEARCH_TEXT_PREFIX + e.name === info.menuItemId);
 
     } else if (info.menuItemId.startsWith(SEARCH_IMAGE_PREFIX)) {
         // Image search
         query = encodeURIComponent(info.srcUrl);
-        const engine = imageSearchEngines.find(e => SEARCH_IMAGE_PREFIX + e.name === info.menuItemId);
-        if (engine) {
-            const searchUrl = engine.url.replace('%s', query);
-            console.log(`> '${engine.name}' search with: ${searchUrl}`);
-            chrome.tabs.create({ url: searchUrl, index: tab.index + 1 });
-        }
+        engine = imageSearchEngines.find(e => SEARCH_IMAGE_PREFIX + e.name === info.menuItemId);
+    }
+
+    // Open search in new tab
+    if (engine) {
+        const searchUrl = engine.url.replace('%s', query);
+        console.log(`> '${engine.name}' search with: ${searchUrl}`);
+        chrome.tabs.create({ url: searchUrl, index: tab.index + 1 });
     }
 };
 
@@ -133,5 +121,5 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 
-console.log('🚀 Extension loaded');
+console.log('🚀 Extension loaded.');
 main();
