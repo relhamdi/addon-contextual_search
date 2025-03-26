@@ -48,3 +48,4 @@ Rules on search engines definition:
 
 - More testing
 - Check if search engines were wrongly defined
+- Make so that, once the search tab is closed, the caller tab is again selected (?)
