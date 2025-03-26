@@ -103,7 +103,7 @@ const handleContextMenuClick = async (info, tab) => {
         if (engine) {
             const searchUrl = engine.url.replace('%s', query);
             console.log(`> '${engine.name}' search with: ${searchUrl}`);
-            chrome.tabs.create({ url: searchUrl });
+            chrome.tabs.create({ url: searchUrl, index: tab.index + 1 });
         }
 
     } else if (info.menuItemId.startsWith(SEARCH_IMAGE_PREFIX)) {
@@ -113,7 +113,7 @@ const handleContextMenuClick = async (info, tab) => {
         if (engine) {
             const searchUrl = engine.url.replace('%s', query);
             console.log(`> '${engine.name}' search with: ${searchUrl}`);
-            chrome.tabs.create({ url: searchUrl });
+            chrome.tabs.create({ url: searchUrl, index: tab.index + 1 });
         }
     }
 };
