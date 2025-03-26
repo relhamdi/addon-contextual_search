@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "Contextual search",
+    "version": "1.0.0",
+    "description": "Add buttons in the contextual menu to use custom search engines.",
+    "permissions": [
+        "contextMenus",
+        "storage",
+        "tabs"
+    ],
+    "background": {
+        "service_worker": "src/background.js"
+    },
+    "icons": {
+        "16": "icons/_app.png",
+        "48": "icons/_app.png",
+        "128": "icons/_app.png"
+    }
+}
