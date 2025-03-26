@@ -6,6 +6,7 @@ const SEARCH_IMAGE_PREFIX = 'imageSearch_';
 
 let searchEngines;
 let imageSearchEngines;
+let lastClickInfo = null;
 
 // Read config file
 const loadConfigData = async () => {
@@ -87,16 +88,13 @@ const buildContextMenuItems = async () => {
     });
 };
 
-const main = async () => {
-    // Load data
-    await loadConfigData();
-    // Build context menu
-    await buildContextMenuItems();
-};
-
-// onClick => Display options and search the element
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+// Contextual menu management
+const handleContextMenuClick = async (info, tab) => {
     let query = '';
+
+    if (!searchEngines || !imageSearchEngines) {
+        await loadConfigData();
+    }
 
     if (info.menuItemId.startsWith(SEARCH_TEXT_PREFIX)) {
         // Text search
@@ -118,7 +116,36 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             chrome.tabs.create({ url: searchUrl });
         }
     }
+};
+
+const main = async () => {
+    // Load data
+    await loadConfigData();
+    // Build context menu
+    await buildContextMenuItems();
+};
+
+
+// onClicked => Handle first click after waking up
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+    if (lastClickInfo) {
+        await handleContextMenuClick(lastClickInfo.info, lastClickInfo.tab);
+        lastClickInfo = null;
+    } else {
+        await handleContextMenuClick(info, tab);
+    }
 });
+
+// onStartup => Run action
+chrome.runtime.onStartup.addListener(() => {
+    if (lastClickInfo) {
+        setTimeout(async () => {
+            await handleContextMenuClick(lastClickInfo.info, lastClickInfo.tab);
+            lastClickInfo = null;
+        }, 300);
+    }
+});
+
 
 console.log('🚀 Extension loaded');
 main();
