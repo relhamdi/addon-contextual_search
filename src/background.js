@@ -1,6 +1,5 @@
 let searchEngines;
 let imageSearchEngines;
-let separatorName;
 
 // Read config file
 const loadConfigData = async () => {
@@ -11,7 +10,6 @@ const loadConfigData = async () => {
         // Load data
         searchEngines = data?.searchEngines || [];
         imageSearchEngines = data?.imageSearchEngines || [];
-        separatorName = data?.separatorName || '';
 
         console.log('Config file loaded.');
         console.log(`> ${searchEngines.length} text search engines loaded.`)
@@ -35,18 +33,18 @@ const buildContextMenuItems = async () => {
 
     // Text search engines buttons and separators
     searchEngines.forEach((engine, index) => {
-        if (engine.name === separatorName) {
-            chrome.contextMenus.create({
-                id: 'separator_' + index,
-                parentId: 'searchText',
-                type: 'separator',
-                contexts: ['selection'],
-            });
-        } else {
+        if (engine.name) {
             chrome.contextMenus.create({
                 id: 'search_' + engine.name,
                 parentId: 'searchText',
                 title: 'On ' + engine.name,
+                contexts: ['selection'],
+            });
+        } else {
+            chrome.contextMenus.create({
+                id: 'separator_' + index,
+                parentId: 'searchText',
+                type: 'separator',
                 contexts: ['selection'],
             });
         }
@@ -61,18 +59,18 @@ const buildContextMenuItems = async () => {
 
     // Image search engines buttons and separators
     imageSearchEngines.forEach((engine, index) => {
-        if (engine.name === separatorName) {
-            chrome.contextMenus.create({
-                id: 'separator_' + index,
-                parentId: 'searchImage',
-                type: 'separator',
-                contexts: ['image'],
-            });
-        } else {
+        if (engine.name) {
             chrome.contextMenus.create({
                 id: 'imageSearch_' + engine.name,
                 parentId: 'searchImage',
                 title: 'On ' + engine.name,
+                contexts: ['image'],
+            });
+        } else {
+            chrome.contextMenus.create({
+                id: 'separator_' + index,
+                parentId: 'searchImage',
+                type: 'separator',
                 contexts: ['image'],
             });
         }

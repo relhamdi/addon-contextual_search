@@ -9,6 +9,9 @@
             "url": "https://www.bing.com/search?q=%s"
         },
         {
+            "name": ""
+        },
+        {
             "name": "DuckDuckGo",
             "url": "https://duckduckgo.com/?q=%s"
         },
@@ -27,9 +30,11 @@
             "url": "https://yandex.com/images/search?rpt=imageview&url=%s"
         },
         {
+            "name": ""
+        },
+        {
             "name": "Bing Images",
             "url": "https://www.bing.com/images/search?q=%s"
         }
-    ],
-    "separatorName": "---"
+    ]
 }
