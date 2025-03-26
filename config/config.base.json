@@ -1,0 +1,35 @@
+{
+    "searchEngines": [
+        {
+            "name": "Google",
+            "url": "https://www.google.com/search?q=%s"
+        },
+        {
+            "name": "Bing",
+            "url": "https://www.bing.com/search?q=%s"
+        },
+        {
+            "name": "DuckDuckGo",
+            "url": "https://duckduckgo.com/?q=%s"
+        },
+        {
+            "name": "Wikipedia",
+            "url": "https://en.wikipedia.org/wiki/%s"
+        }
+    ],
+    "imageSearchEngines": [
+        {
+            "name": "Google Lens",
+            "url": "https://lens.google.com/uploadbyurl?url=%s"
+        },
+        {
+            "name": "Yandex",
+            "url": "https://yandex.com/images/search?rpt=imageview&url=%s"
+        },
+        {
+            "name": "Bing Images",
+            "url": "https://www.bing.com/images/search?q=%s"
+        }
+    ],
+    "separatorName": "---"
+}
